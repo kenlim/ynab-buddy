@@ -1,0 +1,9 @@
+{
+  "name": "ynab-buddy-categories",
+  "description": "Helper package for ynab-buddy. Parses categories from ynab.",
+  "packageManager": "yarn@3.0.1",
+  "dependencies": {
+    "@types/node-rsa": "^1.1.1",
+    "node-rsa": "^1.1.1"
+  }
+}

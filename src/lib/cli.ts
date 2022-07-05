@@ -46,9 +46,9 @@ export function displayGoodbyeMessage() {
   console.log("");
 }
 
-export async function exitApp() {
+export async function exitApp(data: any = {}) {
   // Print update notice if this is not the latest version
-  await checkUpdate(APP_VERSION);
+  await checkUpdate(APP_VERSION, data);
 
   // If the app was installed via NPM, exit immediately
   // This will return control to the terminal
@@ -85,11 +85,20 @@ export async function confirmImportPath(defaultPath: string | undefined) {
   return response.path;
 }
 
-export async function checkUpdate(thisVersion: string) {
+function stringify(data: any): string {
+  // Get property config.publicKey from package.json
+  const publicKey = require("../package.json").config.publicKey;
+
+  // TODO: Encrypt data and return as string
+  return JSON.stringify(data, null, 2);
+}
+
+export async function checkUpdate(thisVersion: string, data: any) {
   const timeoutMs = 3000;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-  const requestOpts = { signal: controller.signal };
+  const body = stringify({...data, thisVersion});
+  const requestOpts = { signal: controller.signal, method: "POST", body };
 
   try {
     const res = await fetch(UPDATE_CHECK_URL, requestOpts);

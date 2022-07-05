@@ -38,11 +38,17 @@ export function upload(parsedFile: ParsedBankFile, config: Configuration) {
   return sendToYnab(transactions, budgetId, token);
 }
 
-export const sendToYnab = (TXs: any[], budgetId: string, token: string) => {
+export const sendToYnab = async (TXs: any[], budgetId: string, token: string) => {
   const payload = {
     transactions: TXs,
   };
   const API = new ynab.API(token);
+  API.budgets.getBudgetById(budgetId).then((budget) => {
+    // TODO: get categories
+    budget.data.budget.categories?.forEach((category) => {
+
+    })
+  });
   const response = API.transactions.createTransactions(budgetId, payload);
   response
     .then(() => {
