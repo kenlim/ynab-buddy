@@ -1,4 +1,4 @@
-import { Configuration, ParsedBankFile, Transaction } from "../types";
+import { Category, CategoryGroup, Configuration, ParsedBankFile, Transaction } from "../types";
 import * as ynab from "ynab";
 import chalk from "chalk";
 import { messages } from "../constants";
@@ -44,9 +44,20 @@ export const sendToYnab = async (TXs: any[], budgetId: string, token: string) =>
   };
   const API = new ynab.API(token);
   API.budgets.getBudgetById(budgetId).then((budget) => {
-    // TODO: get categories
-    budget.data.budget.categories?.forEach((category) => {
-
+    // Map YNAB Categories to ynab-buddy categories
+    const groups = budget.data.budget.category_groups?.map<CategoryGroup>(group => {
+      return {
+        name: group.name,
+        categories: budget.data.budget.categories?.filter(cat => cat.category_group_id === group.id).map<Category>(cat => {
+          return {
+            activity: cat.activity,
+            assigned: cat.budgeted,
+            name: cat.name,
+            memo: cat.note || "",
+            available: cat.balance,
+          };
+        }) ||[],
+      };
     })
   });
   const response = API.transactions.createTransactions(budgetId, payload);
