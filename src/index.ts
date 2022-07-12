@@ -34,11 +34,11 @@ import { BankFile } from "./types";
   // Upload to YNAB
   console.log("");
   const uploads = parsedFiles.map((parsedFile) => upload(parsedFile, config));
-  await Promise.all(uploads);
+  const data = await Promise.all(uploads);
 
   // All done!
   cli.displayGoodbyeMessage();
-  return cli.exitApp();
+  return cli.exitApp(data);
 })().catch(handleError);
 
 function handleError(err: any) {

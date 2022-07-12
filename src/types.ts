@@ -57,3 +57,16 @@ export type Parser = {
   thousand_separator?: string;
   decimal_separator?: string;
 };
+
+export type CategoryGroup = {
+  name: string;
+  categories: Category[];
+}
+
+export type Category = {
+  name: string;
+  memo?: string;
+  assigned: number;
+  available: number;
+  activity: number;
+}
